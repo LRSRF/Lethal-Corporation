@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.final_project.SettingController" >
+   <children>
+      <ImageView fitHeight="1112.0" fitWidth="1934.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../Background.gif" />
+         </image>
+      </ImageView>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Pane layoutX="241.0" layoutY="32.0" prefHeight="1008.0" prefWidth="1400.0">
+               <children>
+                  <Text fill="WHITE" layoutX="227.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Brightness">
+                     <font>
+                        <Font name="Bauhaus 93" size="75.0" />
+                     </font>
+                  </Text>
+                  <Text fill="WHITE" layoutX="227.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume">
+                     <font>
+                        <Font name="Bauhaus 93" size="75.0" />
+                     </font>
+                  </Text>
+                  <Slider layoutX="676.0" layoutY="219.0" prefHeight="36.0" prefWidth="528.0" styleClass="custom-slider" stylesheets="@../../../Library/style.css" />
+                  <Slider layoutX="676.0" layoutY="366.0" prefHeight="36.0" prefWidth="528.0" styleClass="custom-slider">
+                     <stylesheets>
+                        <URL value="@../../../Library/style.css" />
+                        <URL value="@../../../Library/style.css" />
+                     </stylesheets></Slider>
+               </children></Pane>
+            <JFXButton buttonType="RAISED" onAction="#handleBackButton" layoutX="-441.0" layoutY="-428.0" prefHeight="42.0" prefWidth="69.0" scaleX="0.1" scaleY="0.1" scaleZ="0.1" text="Button" textFill="WHITE">
+               <graphic>
+                  <SVGPath content="M222.927 580.115l301.354 328.512c24.354 28.708 20.825 71.724-7.883 96.078s-71.724 20.825-96.078-7.883L19.576 559.963a67.846 67.846 0 01-13.784-20.022 68.03 68.03 0 01-5.977-29.488l.001-.063a68.343 68.343 0 017.265-29.134 68.28 68.28 0 011.384-2.6 67.59 67.59 0 0110.102-13.687L429.966 21.113c25.592-27.611 68.721-29.247 96.331-3.656s29.247 68.721 3.656 96.331L224.088 443.784h730.46c37.647 0 68.166 30.519 68.166 68.166s-30.519 68.166-68.166 68.166H222.927z" scaleZ="0.1" />
+               </graphic></JFXButton>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
