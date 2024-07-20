@@ -13,6 +13,12 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import java.net.URL;
+
+
 public class MenuController {
 
     @FXML
@@ -24,17 +30,16 @@ public class MenuController {
     @FXML
     private JFXButton button3;
 
-
+    private MediaPlayer mediaPlayer;
 
     @FXML
     public void initialize() {
         // Play background music
 
-
         // Fade transition for the ImageView
-        FadeTransition fadeWelcome = new FadeTransition(Duration.seconds(4), welcomeImageView);
+        FadeTransition fadeWelcome = new FadeTransition(Duration.seconds(5), welcomeImageView);
         fadeWelcome.setFromValue(1.0);
-        fadeWelcome.setToValue(0);
+        fadeWelcome.setToValue(0.3);
 
         // Fade transitions for the buttons
         FadeTransition fadeButton1 = new FadeTransition(Duration.seconds(5), button1);
@@ -56,9 +61,11 @@ public class MenuController {
         fadeButton3.play();
 
         System.out.println("Transitions started");
+
+        // Adjust brightness for this scene
+        adjustSceneBrightness();
+        playmusic();
     }
-
-
 
     @FXML
     private void handleExitButton(ActionEvent event) {
@@ -67,16 +74,41 @@ public class MenuController {
 
     @FXML
     private void SettingsButton(ActionEvent event) throws IOException {
-        // Get the current stage using the button that was clicked
         Stage stage = (Stage) ((JFXButton) event.getSource()).getScene().getWindow();
-
-        // Load the new scene from the FXML file
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Settings-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
-
-        // Set the new scene on the stage and show it
+        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         stage.setTitle("Settings");
         stage.setScene(scene);
         stage.show();
     }
+    @FXML
+    private void GameButton(ActionEvent event) throws IOException {
+        Stage stage = (Stage) ((JFXButton) event.getSource()).getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        stage.setTitle("Game");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void adjustSceneBrightness() {
+        double brightness = AppState.getInstance().getBrightness();
+        Scene scene = welcomeImageView.getScene();
+        if (scene != null) {
+            scene.getRoot().setOpacity(brightness);
+        }
+    }
+    private void playmusic(){
+        String musicFile = "/Library/Music/BGM.mp3"; // Update this path as needed
+        URL resource = getClass().getResource(musicFile);
+        if (resource != null) {
+            Media media = new Media(resource.toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the music
+            mediaPlayer.play();
+        } else {
+            System.err.println("Music file not found: " + musicFile);
+        }
+    }
+
 }
