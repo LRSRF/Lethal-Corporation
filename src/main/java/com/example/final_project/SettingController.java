@@ -64,11 +64,7 @@ public class SettingController {
     }
 
     private void adjustVolume(double value) {
-            MediaPlayer mediaPlayer = AppState.getInstance().getMediaPlayer();
-            
-            if (mediaPlayer != null) {
-                mediaPlayer.setVolume(value);
-            }
+
         }
 
 

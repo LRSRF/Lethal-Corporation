@@ -29,9 +29,7 @@ public class AppState {
     }
 
     // Getters and setters for MediaPlayer
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
-    }
+
 
     public void setMediaPlayer(MediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;

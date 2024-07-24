@@ -89,6 +89,7 @@ public class MenuController {
         stage.setTitle("Game");
         stage.setScene(scene);
         stage.show();
+        stopmusic();
     }
 
     private void adjustSceneBrightness() {
@@ -108,6 +109,11 @@ public class MenuController {
             mediaPlayer.play();
         } else {
             System.err.println("Music file not found: " + musicFile);
+        }
+    }
+    private void stopmusic(){
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
         }
     }
 
