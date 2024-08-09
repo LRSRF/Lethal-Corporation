@@ -16,8 +16,9 @@ public class SettingController {
 
     @FXML
     private Slider adjustBrightness;
+
     @FXML
-    private Slider volumeSlider;
+    private Slider adjustVolume;
 
     private int brightnessValue;
     private int volumeValue;
@@ -33,9 +34,6 @@ public class SettingController {
                 adjustBrightness(brightnessValue);
             }
         });
-
-        // Initialize volume slider
-
     }
 
     @FXML

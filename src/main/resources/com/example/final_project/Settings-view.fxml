@@ -19,8 +19,9 @@
          <children>
             <Pane layoutX="102.0" layoutY="37.0" prefHeight="608.0" prefWidth="1162.0">
                <children>
-                  <Slider fx:id="adjustBrightness" layoutX="455.0" layoutY="275.0" prefHeight="16.0" prefWidth="436.0" styleClass="custom-slider" stylesheets="@../../../Library/style.css" value="100.0" />
+                  <Slider fx:id="adjustBrightness" layoutX="455.0" layoutY="268.0" prefHeight="16.0" prefWidth="436.0" styleClass="custom-slider" stylesheets="@../../../Library/style.css" value="100.0" />
                   <JFXButton buttonType="RAISED" layoutX="443.0" layoutY="544.0" onAction="#handleBackButton" opacity="0.0" prefHeight="50.0" prefWidth="178.0" text="Button" textFill="WHITE" />
+                  <Slider fx:id="adjustVolume" layoutX="455.0" layoutY="367.0" prefHeight="16.0" prefWidth="436.0" styleClass="custom-slider" stylesheets="@../../../Library/style.css" value="100.0" />
                </children></Pane>
          </children>
       </AnchorPane>

@@ -3,8 +3,11 @@
 }
 
 .custom-slider .track {
-    -fx-background-color: linear-gradient(to left,black, red);
-    -fx-pref-height:7px;
+    -fx-background-color: #2f343a;
+    -fx-pref-height: 10px;
+    -fx-border-color: #bc4144;
+    -fx-color:#bc4144;
+    -fx-border-width: 2;
 }
 
 

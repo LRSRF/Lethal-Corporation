@@ -16,20 +16,20 @@
                   <Image url="@../../../MainMenuBackground.png" />
                </image>
             </ImageView>
-            <JFXButton fx:id="button3" buttonType="RAISED" layoutX="547.0" layoutY="544.0" onAction="#handleExitButton" onMouseClicked="#handleExitButton" opacity="0.0" prefHeight="83.0" prefWidth="173.0" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton fx:id="QuitButton" buttonType="RAISED" layoutX="574.0" layoutY="555.0" onAction="#ExitButton" onMouseClicked="#ExitButton" opacity="0.0" prefHeight="37.0" prefWidth="116.0" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font name="Bauhaus 93" size="46.0" />
+                  <Font size="10.0" />
                </font>
             </JFXButton>
       
-            <JFXButton fx:id="button1" buttonType="RAISED" layoutX="501.0" layoutY="360.0" onAction="#GameButton" opacity="0.0" prefHeight="76.0" prefWidth="266.0" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton fx:id="StartButton" buttonType="RAISED" layoutX="552.0" layoutY="386.0" onAction="#GameButton" opacity="0.0" prefHeight="37.0" prefWidth="164.0" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font name="Bauhaus 93" size="46.0" />
+                  <Font size="10.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="button2" buttonType="RAISED" layoutX="478.0" layoutY="451.0" onAction="#SettingsButton" onMouseClicked="#SettingsButton" opacity="0.0" prefHeight="40.0" prefWidth="291.0" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton fx:id="SettingsButton" buttonType="RAISED" layoutX="523.0" layoutY="468.0" onAction="#SettingsButton" onMouseClicked="#SettingsButton" opacity="0.0" prefHeight="44.0" prefWidth="218.0" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font name="Bauhaus 93" size="46.0" />
+                  <Font size="10.0" />
                </font>
             </JFXButton>
          </children>
