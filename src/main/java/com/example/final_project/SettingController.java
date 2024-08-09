@@ -35,13 +35,7 @@ public class SettingController {
         });
 
         // Initialize volume slider
-        volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                volumeValue = newValue.intValue();
-                adjustVolume(volumeValue);
-            }
-        });
+
     }
 
     @FXML

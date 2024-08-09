@@ -1,10 +1,10 @@
 .custom-slider {
-    -fx-pref-width: 500px;
+    -fx-pref-width: 400px;
 }
 
 .custom-slider .track {
-    -fx-background-color: linear-gradient(to left,cyan, magenta);
-    -fx-pref-height:15px;
+    -fx-background-color: linear-gradient(to left,black, red);
+    -fx-pref-height:7px;
 }
 
 

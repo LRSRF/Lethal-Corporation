@@ -22,8 +22,6 @@ import java.net.URL;
 public class MenuController {
 
     @FXML
-    private ImageView welcomeImageView;
-    @FXML
     private JFXButton button1;
     @FXML
     private JFXButton button2;
@@ -37,9 +35,6 @@ public class MenuController {
         // Play background music
 
         // Fade transition for the ImageView
-        FadeTransition fadeWelcome = new FadeTransition(Duration.seconds(5), welcomeImageView);
-        fadeWelcome.setFromValue(1.0);
-        fadeWelcome.setToValue(0.3);
 
         // Fade transitions for the buttons
         FadeTransition fadeButton1 = new FadeTransition(Duration.seconds(5), button1);
@@ -55,7 +50,7 @@ public class MenuController {
         fadeButton3.setToValue(1.0);
 
         // Start the transitions
-        fadeWelcome.play();
+
         fadeButton1.play();
         fadeButton2.play();
         fadeButton3.play();
@@ -94,10 +89,7 @@ public class MenuController {
 
     private void adjustSceneBrightness() {
         double brightness = AppState.getInstance().getBrightness();
-        Scene scene = welcomeImageView.getScene();
-        if (scene != null) {
-            scene.getRoot().setOpacity(brightness);
-        }
+
     }
     private void playmusic(){
         String musicFile = "/Library/Music/BGM.mp3"; // Update this path as needed
