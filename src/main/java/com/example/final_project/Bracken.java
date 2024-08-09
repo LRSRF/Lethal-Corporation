@@ -8,14 +8,18 @@ import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 public class Bracken extends Entity {
-    private Image brackenImage1, brackenImage2, brackenImage3, brackenImage4;
+    private Image brackenImageRight1, brackenImageRight2, brackenImageLeft1, brackenImageLeft2;
     private Timeline movementTimeline;
+    private boolean movingRight = true;
+    private boolean imageToggle = true;
 
-    public Bracken(double x, double y, double speed, String imagePath1, String imagePath2, String imagePath3, String imagePath4) {
-        super(x, y, speed, imagePath1, imagePath2, imagePath3, imagePath4);
-        brackenImage1 = new Image(getClass().getResourceAsStream(imagePath1));
-        brackenImage2 = new Image(getClass().getResourceAsStream(imagePath2));
-        currentImage = brackenImage1;
+    public Bracken(double x, double y, double speed, String imagePathRight1, String imagePathRight2, String imagePathLeft1, String imagePathLeft2) {
+        super(x, y, speed, imagePathRight1, imagePathRight2, imagePathLeft1, imagePathLeft2);
+        brackenImageRight1 = new Image(getClass().getResourceAsStream(imagePathRight1));
+        brackenImageRight2 = new Image(getClass().getResourceAsStream(imagePathRight2));
+        brackenImageLeft1 = new Image(getClass().getResourceAsStream(imagePathLeft1));
+        brackenImageLeft2 = new Image(getClass().getResourceAsStream(imagePathLeft2));
+        currentImage = brackenImageRight1;
     }
 
     @Override
@@ -25,17 +29,24 @@ public class Bracken extends Entity {
 
     @Override
     public void animate() {
-        currentImage = currentImage == brackenImage1 ? brackenImage2 : brackenImage1;
+        // Alternate the image based on direction
+        if (movingRight) {
+            currentImage = imageToggle ? brackenImageRight1 : brackenImageRight2;
+        } else {
+            currentImage = imageToggle ? brackenImageLeft1 : brackenImageLeft2;
+        }
+        imageToggle = !imageToggle;
     }
 
     @Override
     public void move(double dx, double dy) {
         x += dx;
         y += dy;
+        movingRight = dx > 0;
     }
 
     public void setupMovement(Player player) {
-        movementTimeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
+        movementTimeline = new Timeline(new KeyFrame(Duration.millis(500), event -> { // Animation update frequency
             double playerX = player.getX();
             double playerY = player.getY();
             double dx = playerX > x ? speed : -speed;

@@ -35,6 +35,7 @@ public class Game {
     private Text Gameover;
 
     private GraphicsContext gc;
+    private MediaPlayer mediaPlayer;
     private Timeline animationTimeline;
     private boolean isGameOver = false;
 
@@ -61,6 +62,11 @@ public class Game {
 
         // Initialize player
         player = new Player(600, 300, 10.0, barriers, "/Employee1.png", "/Employee2.png", "/Employee3.png", "/Employee4.png");
+        bracken = new Bracken(600, 500, 10.0, "/Bracken1.png", "/Bracken2.png", "/Bracken3.png", "/Bracken4.png");
+
+        bracken.setupMovement(player);
+
+        playmusic();
 
         drawGame();
 
@@ -93,6 +99,27 @@ public class Game {
         animationTimeline.play();
     }
 
+    //Play background music
+    private void playmusic(){
+        String musicFile = "/Library/Music/GameMusic.mp3";
+        URL resource = getClass().getResource(musicFile);
+        if (resource != null) {
+            Media media = new Media(resource.toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.play();
+        } else {
+            System.err.println("Music file not found: " + musicFile);
+        }
+    }
+
+    //Stop background music
+    private void stopmusic(){
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+    
     private void drawGame() {
         // Clear the canvas to avoid afterimages
         gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
@@ -183,6 +210,7 @@ public class Game {
         bracken.stopMovement();
         System.out.println("Game Over!");
         isGameOver = true;
+        stopmusic();
 
         Gameover.setOpacity(1.0);
         gameCanvas.setEffect(new GaussianBlur(10));
