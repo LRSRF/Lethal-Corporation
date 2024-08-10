@@ -155,4 +155,19 @@ public class Player extends Entity {
     public List<Item> getCollectedItems() {
         return collectedItems;
     }
+
+    // Method to add an item to the collected items list
+    public void collectItem(Item item) {
+        collectedItems.add(item);
+    }
+
+    // Method to check if an item is collected
+    public boolean hasCollected(Item item) {
+        return collectedItems.contains(item);
+    }
+
+    // Method to get total value of collected items
+    public double getTotalCollectedValue() {
+        return collectedItems.stream().mapToDouble(Item::getValue).sum();
+    }
 }

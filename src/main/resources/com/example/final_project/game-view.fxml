@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -10,13 +12,19 @@
    <children>
       <AnchorPane fx:id="gameRoot" prefHeight="200.0" prefWidth="200.0">
          <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="720.0" stroke="BLACK" strokeType="INSIDE" width="1280.0" />
             <Canvas fx:id="gameCanvas" height="720.0" width="1280.0" />
-            <Text fx:id="Gameover" fill="RED" layoutX="277.0" layoutY="335.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GAME OVER" textAlignment="CENTER" wrappingWidth="725.853515625">
+            <Text fx:id="Report" fill="#bc4144" layoutX="277.0" layoutY="410.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collected: /     Grade:" textAlignment="CENTER" wrappingWidth="725.853515625">
                <font>
-                  <Font name="Bell MT Bold" size="96.0" />
+                  <Font name="Courier New Bold" size="34.0" />
                </font>
             </Text>
          </children>
       </AnchorPane>
+      <JFXButton fx:id="backButton" buttonType="RAISED" onAction="#ExitButton" onMouseClicked="#ExitButton" opacity="0.0" prefHeight="724.0" prefWidth="1280.0" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </JFXButton>
    </children>
 </StackPane>

@@ -22,10 +22,12 @@ public class MenuController {
     private JFXButton QuitButton;
 
     private MediaPlayer mediaPlayer;
+    private FXMLLoader scene;
 
     //Initialize with brightness and music
     @FXML
     public void initialize() {
+        stopmusic();
         adjustSceneBrightness();
         playmusic();
     }
@@ -36,6 +38,8 @@ public class MenuController {
         Stage stage = (Stage) ((JFXButton) event.getSource()).getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        scene.getRoot().setOpacity(AppState.getInstance().getBrightness());
+        AppState.getInstance().setMediaPlayer(mediaPlayer);
         stage.setTitle("Lethal Corporation");
         stage.setScene(scene);
         stage.show();
@@ -48,6 +52,8 @@ public class MenuController {
         Stage stage = (Stage) ((JFXButton) event.getSource()).getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Settings-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        scene.getRoot().setOpacity(AppState.getInstance().getBrightness());
+        AppState.getInstance().setMediaPlayer(mediaPlayer);
         stage.setTitle("Lethal Corporation");
         stage.setScene(scene);
         stage.show();
@@ -62,6 +68,11 @@ public class MenuController {
     //Update brightness
     private void adjustSceneBrightness() {
         double brightness = AppState.getInstance().getBrightness();
+        double adjustedBrightness = (100 - brightness * 100) / 100.0; // Reversed brightness value
+        Scene scene = StartButton.getScene(); // Assuming you want to apply brightness to the current scene
+        if (scene != null) {
+            scene.getRoot().setOpacity(adjustedBrightness);
+        }
     }
 
     //Play background music
@@ -72,6 +83,8 @@ public class MenuController {
             Media media = new Media(resource.toString());
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            AppState.getInstance().setMediaPlayer(mediaPlayer);
+            mediaPlayer.setVolume(AppState.getInstance().getVolume());
             mediaPlayer.play();
         } else {
             System.err.println("Music file not found: " + musicFile);
