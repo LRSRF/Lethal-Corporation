@@ -1,8 +1,10 @@
 package com.example.final_project;
 
 
+import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.text.Text;
 
 public class Item {
     private double x, y;
@@ -10,7 +12,9 @@ public class Item {
     private boolean collected;
     private int value;
     private Image image;
-
+    private int collectedCount = 0;
+    @FXML
+    private Text Gearnumber;
     public Item(double x, double y, int value, String imagePath) {
         this.x = x;
         this.y = y;
@@ -34,7 +38,9 @@ public class Item {
 
     public void collect() {
         collected = true;
+
         System.out.println("Item collected with value: " + value);
+
     }
 
     // Getters and setters for x, y, width, height, and value

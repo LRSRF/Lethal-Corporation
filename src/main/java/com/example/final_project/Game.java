@@ -302,4 +302,5 @@ public class Game {
         gameCanvas.setOnKeyPressed(null);
         gameCanvas.setOnKeyReleased(null);
     }
+
 }

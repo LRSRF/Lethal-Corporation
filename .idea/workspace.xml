@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2a615b5-0818-447a-9c03-bf7d7d04a51c" name="Changes" comment="SHEESH">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/final_project/GameMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Map1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Map2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Map3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Map4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Map5.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/final_project/Bracken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/final_project/Bracken.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/final_project/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/final_project/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/final_project/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/final_project/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/BG.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Map0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/final_project/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/final_project/Item.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/final_project/game-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/final_project/game-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -141,15 +133,7 @@
       <option name="project" value="LOCAL" />
       <updated>1723238586329</updated>
     </task>
-    <task id="LOCAL-00005" summary="SHEESH">
-      <option name="closed" value="true" />
-      <created>1723240565265</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1723240565266</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
