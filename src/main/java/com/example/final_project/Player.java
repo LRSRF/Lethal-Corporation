@@ -16,8 +16,9 @@ public class Player extends Entity {
     private List<Barrier> barriers;
     private List<Item> collectedItems;
     private double x, y; // Ensure these are initialized
+    private Game game;
 
-    public Player(double x, double y, double speed, List<Barrier> barriers, String imagePath1, String imagePath2, String imagePath3, String imagePath4) {
+    public Player(Game game, double x, double y, double speed, List<Barrier> barriers, String imagePath1, String imagePath2, String imagePath3, String imagePath4) {
         super(x, y, speed, imagePath1, imagePath2, imagePath3, imagePath4);
         spriteImage1 = new Image(getClass().getResourceAsStream(imagePath1));
         spriteImage2 = new Image(getClass().getResourceAsStream(imagePath2));
@@ -28,6 +29,7 @@ public class Player extends Entity {
         this.x = x;
         this.y = y;
         this.collectedItems = new ArrayList<>();
+        this.game = game;
         resetImage();
     }
 
@@ -56,6 +58,10 @@ public class Player extends Entity {
     public void move(double dx, double dy) {
         x += dx;
         y += dy;
+    }
+
+    public void setBarriers(List<Barrier> barriers) {
+        this.barriers = barriers;
     }
 
     public void handleKeyPress(KeyEvent event) {
@@ -92,7 +98,8 @@ public class Player extends Entity {
         isMoving = !collision;
 
         // Check for item collision
-        Iterator<Item> iterator = Game.getItems().iterator();
+        GameMap currentMap = game.getCurrentMap(); // Get current map from game
+        Iterator<Item> iterator = currentMap.getItems().iterator();
         while (iterator.hasNext()) {
             Item item = iterator.next();
             if (item.checkCollision(x, y, getWidth(), getHeight())) {

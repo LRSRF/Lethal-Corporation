@@ -4,10 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -18,12 +15,9 @@ import javafx.animation.Timeline;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.awt.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Game {
 
@@ -40,31 +34,25 @@ public class Game {
     private boolean isGameOver = false;
 
     private Player player;
-    private Bracken bracken;
-    private List<Barrier> barriers;
-    private static List<Item> items = new ArrayList<>();;
+    private Map<String, GameMap> maps;
+    private GameMap currentMap;
 
     @FXML
     public void initialize() {
         gc = gameCanvas.getGraphicsContext2D();
 
-        // Initialize barriers
-        barriers = new ArrayList<>();
-        barriers.add(new Barrier(0, 0, 280, 720));
-        barriers.add(new Barrier(1000, 0, 280, 720));
-        barriers.add(new Barrier(280, 0, 720, 140));
-        barriers.add(new Barrier(0, 715, 1280, 720));
-
-        // Initialize items
-        items = new ArrayList<>();
-        Item axel = new Item(880, 600, 100, "/Axel.png");
-        addItem(axel);
+        // Initialize maps
+        maps = new HashMap<>();
+        loadMaps();
+        setCurrentMap("map0");
 
         // Initialize player
-        player = new Player(600, 300, 10.0, barriers, "/Employee1.png", "/Employee2.png", "/Employee3.png", "/Employee4.png");
-        bracken = new Bracken(600, 500, 10.0, "/Bracken1.png", "/Bracken2.png", "/Bracken3.png", "/Bracken4.png");
+        player = new Player(this,600, 300, 10.0, currentMap.getBarriers(), "/Employee1.png", "/Employee2.png", "/Employee3.png", "/Employee4.png");
 
-        bracken.setupMovement(player);
+        // Setup player and mobs
+        for (Bracken bracken : currentMap.getMobs()) {
+            bracken.setupMovement(player, currentMap.getBarriers());
+        }
 
         playmusic();
 
@@ -78,21 +66,95 @@ public class Game {
         setupAnimation();
     }
 
-    public static List<Item> getItems() {
-        return items;
+    private void loadMaps() {
+        // Create and add maps
+        GameMap map0 = new GameMap("/Map0.png");
+        map0.addBarrier(new Barrier(0, 0, 1280, 140));
+        map0.addBarrier(new Barrier(0, 14, 13, 214));
+        map0.addBarrier(new Barrier(1267, 14, 13, 214));
+        map0.addBarrier(new Barrier(0, 477, 13, 214));
+        map0.addBarrier(new Barrier(1266, 477, 13, 214));
+        map0.addBarrier(new Barrier(0, 707, 540, 13));
+        map0.addBarrier(new Barrier(720, 707, 540, 13));
+        map0.addItem(new Item(990, 584, 100, "/Axel.png"));
+
+        GameMap map1 = new GameMap("/Map1.png");
+        map1.addBarrier(new Barrier(735, 0, 540, 215));
+        map1.addBarrier(new Barrier(730, 488, 540, 230));
+        map1.addBarrier(new Barrier(555, 10, 175, 120));
+        map1.addBarrier(new Barrier(0, 0, 550, 215));
+        map1.addBarrier(new Barrier(0, 0, 370, 710));
+        map1.addBarrier(new Barrier(0, 488, 550, 230));
+
+        GameMap map2 = new GameMap("/Map2.png");
+        map2.addBarrier(new Barrier(0, 0, 725, 215));
+        map2.addBarrier(new Barrier(0, 480, 535, 235));
+        map2.addBarrier(new Barrier(725, 0, 550, 715));
+
+        GameMap map3 = new GameMap("/Map3.png");
+        map3.addBarrier(new Barrier(0, 0, 550, 720));
+        map3.addBarrier(new Barrier(734, 0, 542, 217));
+        map3.addBarrier(new Barrier(734, 490, 542, 217));
+        map3.addBarrier(new Barrier(547, 0, 175, 120));
+        map3.addBarrier(new Barrier(0, 707, 1280, 13));
+        map3.addItem(new Item(764, 360, 100, "/Axel.png"));
+
+        GameMap map4 = new GameMap("/Map4.png");
+        map4.addBarrier(new Barrier(0, 0, 542, 217));
+        map4.addBarrier(new Barrier(726, 0, 542, 217));
+        map4.addBarrier(new Barrier(0, 490, 1274, 227));
+        map4.addBarrier(new Barrier(547, 0, 175, 120));
+
+        GameMap map5 = new GameMap("/Map5.png");
+        map5.addBarrier(new Barrier(0, 0, 542, 217));
+        map5.addBarrier(new Barrier(726, 0, 542, 217));
+        map5.addBarrier(new Barrier(547, 0, 175, 120));
+        map5.addBarrier(new Barrier(726, 490, 550, 227));
+        map5.addItem(new Item(590, 580, 100, "/Axel.png"));
+        map5.addMob(new Bracken(1091, 287, 20.0, "/Bracken1.png", "/Bracken2.png", "/Bracken3.png", "/Bracken4.png"));
+
+        map0.setLeftMapKey("map1");
+        map0.setRightMapKey("map2");
+        map0.setDownMapKey("map4");
+
+        map1.setRightMapKey("map0");
+        map1.setDownMapKey("map3");
+
+        map2.setLeftMapKey("map0");
+        map2.setDownMapKey("map5");
+
+        map3.setRightMapKey("map4");
+        map3.setUpMapKey("map1");
+
+        map4.setUpMapKey("map0");
+        map4.setLeftMapKey("map3");
+        map4.setRightMapKey("map5");
+
+        map5.setUpMapKey("map2");
+        map5.setLeftMapKey("map4");
+
+        maps.put("map0", map0);
+        maps.put("map1", map1);
+        maps.put("map2", map2);
+        maps.put("map3", map3);
+        maps.put("map4", map4);
+        maps.put("map5", map5);
     }
 
-    public static void addItem(Item item) {
-        items.add(item);
+    private void setCurrentMap(String mapKey) {
+        currentMap = maps.get(mapKey);
     }
 
-    public static void removeItem(Item item) {
-        items.remove(item);
+    public GameMap getCurrentMap() {
+        return currentMap;
     }
 
     private void setupAnimation() {
         animationTimeline = new Timeline(new KeyFrame(Duration.seconds(0.2), event -> {
             player.animate();
+            for (Bracken bracken : currentMap.getMobs()) {
+                bracken.animate();
+            }
             drawGame();
         }));
         animationTimeline.setCycleCount(Animation.INDEFINITE);
@@ -119,35 +181,22 @@ public class Game {
             mediaPlayer.stop();
         }
     }
-    
+
     private void drawGame() {
         // Clear the canvas to avoid afterimages
         gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
-        // Draw the barriers
-        if (barriers != null) {
-            for (Barrier barrier : barriers) {
-                barrier.draw(gc);
-            }
-        }
+        // Draw the current map
+        currentMap.draw(gc);
 
-        // Draw items
-        if (items != null) {
-            for (Item item : items) {
-                item.draw(gc);
-            }
-        }
-
-        // Draw the game elements (player and bracken)
+        // Draw the player
         player.draw(gc);
 
-        // Draw the bracken only if it exists
-        if (bracken != null) {
-            bracken.draw(gc);
-
-            // Check for collision between player and bracken
+        // Check for collision between player and mobs
+        for (Bracken bracken : currentMap.getMobs()) {
             if (player.checkCollision(bracken.getX(), bracken.getY(), bracken.getWidth(), bracken.getHeight())) {
                 gameOver();
+                return;
             }
         }
 
@@ -169,7 +218,7 @@ public class Game {
         gc.clip();
 
         gc.setFill(Color.WHITE);
-        gc.setGlobalAlpha(0.2);
+        gc.setGlobalAlpha(0.3);
         gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
         gc.restore();
@@ -179,8 +228,41 @@ public class Game {
         if (isGameOver) return;
 
         player.handleKeyPress(event);
+
+        // Check for map transitions
+        double playerX = player.getX();
+        double playerY = player.getY();
+
+        if (playerX <= 0 && currentMap.getLeftMapKey() != null) {
+            switchMap(currentMap.getLeftMapKey(), gameCanvas.getWidth() - player.getWidth(), playerY);
+        } else if (playerX + player.getWidth() >= gameCanvas.getWidth() && currentMap.getRightMapKey() != null) {
+            switchMap(currentMap.getRightMapKey(), 0, playerY);
+        } else if (playerY <= 150 && currentMap.getUpMapKey() != null) {
+            switchMap(currentMap.getUpMapKey(), playerX, gameCanvas.getHeight() - player.getHeight());
+        } else if (playerY + player.getHeight() >= gameCanvas.getHeight() && currentMap.getDownMapKey() != null) {
+            switchMap(currentMap.getDownMapKey(), playerX, 0+200);
+        } else {
+            drawGame();
+            startAnimation();
+        }
+    }
+
+    private void switchMap(String newMapKey, double newX, double newY) {
+        // Switch to the new map
+        setCurrentMap(newMapKey);
+
+        // Update player position
+        player.setX(newX);
+        player.setY(newY);
+        player.setBarriers(getCurrentMap().getBarriers());
+
+        // Update mobs to target the player in the new map
+        for (Bracken bracken : currentMap.getMobs()) {
+            bracken.setupMovement(player, currentMap.getBarriers());
+        }
+
+        // Redraw the game
         drawGame();
-        startAnimation();
     }
 
     private void handleKeyReleased(KeyEvent event) {
@@ -207,13 +289,15 @@ public class Game {
     private void gameOver() {
         // Handle game over
         animationTimeline.stop();
-        bracken.stopMovement();
+        for (Bracken bracken : currentMap.getMobs()) {
+            bracken.stopMovement();
+        }
         System.out.println("Game Over!");
         isGameOver = true;
         stopmusic();
 
         Gameover.setOpacity(1.0);
-        gameCanvas.setEffect(new GaussianBlur(10));
+        gameCanvas.setEffect(new GaussianBlur(50));
 
         gameCanvas.setOnKeyPressed(null);
         gameCanvas.setOnKeyReleased(null);
