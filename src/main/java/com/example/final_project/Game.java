@@ -1,11 +1,19 @@
 package com.example.final_project;
 
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -14,19 +22,23 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
+import javafx.scene.image.Image;
+import java.awt.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class Game {
-
+    private TreeTableView<?> Inventory;
     @FXML
     private Canvas gameCanvas;
     @FXML
     private Button backButton;
     @FXML
     private Text Gameover;
+    @FXML
+    private AnchorPane gameRoot;
 
     private GraphicsContext gc;
     private MediaPlayer mediaPlayer;
@@ -37,13 +49,43 @@ public class Game {
     private Map<String, GameMap> maps;
     private GameMap currentMap;
 
-    @FXML
+    private Canvas inventoryCanvas;
+
+    private Stack<Image> inventoryStack = new Stack<>();
+    private GraphicsContext inventoryGC;
+
+    private static Game currentGame;
+    private int collectedCount = 0;
+
+
+
+    public Game() {
+        currentGame = this; // Set the current instance when the game is created
+    }
+    public static Game getCurrentGame() {
+        if (currentGame == null) {
+            currentGame = new Game();
+        }
+        return currentGame;
+    }
+    public int getCollectedCount() {
+        System.out.println(collectedCount);
+        return collectedCount;
+    }
+
+    public void incrementCollectedCount() {
+        collectedCount++;
+    }
+    public void minusCollectedCount() {
+        collectedCount--;
+    }
     public void initialize() {
         gc = gameCanvas.getGraphicsContext2D();
 
         // Initialize maps
         maps = new HashMap<>();
         loadMaps();
+        loadInventory();
         setCurrentMap("map0");
 
         // Initialize player
@@ -63,7 +105,10 @@ public class Game {
         gameCanvas.setFocusTraversable(true);
         gameCanvas.requestFocus();
 
+
         setupAnimation();
+
+
     }
 
     private void loadMaps() {
@@ -77,6 +122,10 @@ public class Game {
         map0.addBarrier(new Barrier(0, 707, 540, 13));
         map0.addBarrier(new Barrier(720, 707, 540, 13));
         map0.addItem(new Item(990, 584, 100, "/Axel.png"));
+        map0.addItem(new Item(990, 550, 100, "/Axel.png"));
+        map0.addItem(new Item(990, 520, 100, "/Axel.png"));
+        map0.addItem(new Item(920, 520, 100, "/Axel.png"));
+        map0.addItem(new Item(830, 520, 100, "/Axel.png"));
 
         GameMap map1 = new GameMap("/Map1.png");
         map1.addBarrier(new Barrier(735, 0, 540, 215));
@@ -140,14 +189,111 @@ public class Game {
         maps.put("map4", map4);
         maps.put("map5", map5);
     }
+    private void loadInventory() {
+        // Create a new canvas for the inventory
+        inventoryCanvas = new Canvas(150, 150); // Single cell, adjust size as needed
+        inventoryCanvas.setVisible(true); // Make visible
 
-    private void setCurrentMap(String mapKey) {
+        // Set position for the inventory canvas
+        inventoryCanvas.setLayoutX(1125); // Adjust position as needed
+        inventoryCanvas.setLayoutY(565); // Adjust position as needed
+
+        // Get the graphics context to draw items
+        inventoryGC = inventoryCanvas.getGraphicsContext2D();
+
+        // Skip filling the background with a solid color for transparency
+
+        // Draw a single cell border
+
+
+        inventoryGC.strokeRect(0, 0, inventoryCanvas.getWidth(), inventoryCanvas.getHeight());
+
+        // Add the canvas to the game root
+        gameRoot.getChildren().add(inventoryCanvas);
+    }
+
+    public void addInventory(String imagePath) {
+        // Load the image
+        Image itemImage = new Image(imagePath);
+
+        // Add the image to the stack (could be an ArrayList or Stack)
+        inventoryStack.push(itemImage);
+
+        // Redraw the inventory
+        redrawInventory();
+    }
+
+
+    public void redrawInventory() {
+        // Clear the inventory canvas
+        inventoryGC.clearRect(0, 0, inventoryCanvas.getWidth(), inventoryCanvas.getHeight());
+
+        // Draw the border around the inventory
+        inventoryGC.setStroke(Color.BLACK);
+        inventoryGC.strokeRect(0, 0, inventoryCanvas.getWidth(), inventoryCanvas.getHeight());
+
+        // Stack the items visually
+        int index = 0;
+        for (Image item : inventoryStack) {
+            double offset = index * -20; // Adjust overlap shift (e.g., 10 pixels to the left for each item)
+            double x = offset + 55; // Shift each subsequent item
+            double y = offset * 0 + 15; // Optional: Add a vertical offset for visual effect
+
+            inventoryGC.drawImage(item, x, y, 100, 100); // Adjust size as needed
+            index++;
+        }
+    }
+
+    public void dropInventory(double playerX, double playerY) {
+        if (!inventoryStack.isEmpty()) {
+            // Remove the top item from the stack
+            Image droppedItem = inventoryStack.pop();
+
+            minusCollectedCount();
+
+            // Redraw the inventory to reflect the removed item
+            redrawInventory();
+
+            // Create a new image view for the dropped item
+            ImageView droppedItemView = new ImageView(droppedItem);
+
+            // Set the position where the player is currently standing
+            droppedItemView.setX(playerX);
+            droppedItemView.setY(playerY);
+
+            // Adjust the size of the dropped item if needed
+            droppedItemView.setFitWidth(100); // Adjust width as needed
+            droppedItemView.setFitHeight(100); // Adjust height as needed
+
+            // Add the dropped item to the game root
+            gameRoot.getChildren().add(droppedItemView);
+
+            // Create a FadeTransition for the dropped item
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(4), droppedItemView);
+            fadeTransition.setFromValue(1.0);  // Fully visible
+            fadeTransition.setToValue(0.0);    // Completely transparent
+
+            // Start the fade-out effect
+            fadeTransition.play();
+
+            // Optionally, remove the item after the fade effect is complete
+            fadeTransition.setOnFinished(event -> {
+                gameRoot.getChildren().remove(droppedItemView);  // Remove the item from the game
+            });
+        }
+    }
+
+
+
+    public void setCurrentMap(String mapKey) {
         currentMap = maps.get(mapKey);
     }
 
     public GameMap getCurrentMap() {
         return currentMap;
     }
+
+
 
     private void setupAnimation() {
         animationTimeline = new Timeline(new KeyFrame(Duration.seconds(0.2), event -> {
@@ -227,6 +373,7 @@ public class Game {
     private void handleKeyPressed(KeyEvent event) {
         if (isGameOver) return;
 
+
         player.handleKeyPress(event);
 
         // Check for map transitions
@@ -244,6 +391,9 @@ public class Game {
         } else {
             drawGame();
             startAnimation();
+        }
+        if (event.getCode() == KeyCode.G) {
+            dropInventory(playerX, playerY);
         }
     }
 
@@ -302,5 +452,6 @@ public class Game {
         gameCanvas.setOnKeyPressed(null);
         gameCanvas.setOnKeyReleased(null);
     }
+
 
 }

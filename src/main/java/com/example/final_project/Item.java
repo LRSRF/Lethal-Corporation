@@ -9,12 +9,10 @@ import javafx.scene.text.Text;
 public class Item {
     private double x, y;
     private double width, height;
-    private boolean collected;
     private int value;
     private Image image;
-    private int collectedCount = 0;
-    @FXML
-    private Text Gearnumber;
+    private boolean collectible = true;
+
     public Item(double x, double y, int value, String imagePath) {
         this.x = x;
         this.y = y;
@@ -29,6 +27,9 @@ public class Item {
     }
 
     public boolean checkCollision(double playerX, double playerY, double playerWidth, double playerHeight) {
+        if (!collectible) {
+            return false; // Skip collision checking if the item is not collectible
+        }
         return playerX < x + width && playerX + playerWidth > x && playerY < y + height && playerY + playerHeight > y;
     }
 
@@ -37,10 +38,17 @@ public class Item {
     }
 
     public void collect() {
-        collected = true;
+        Game game = Game.getCurrentGame(); // Retrieve the active Game instance
 
-        System.out.println("Item collected with value: " + value);
+        if (game.getCollectedCount() < 4) { // Use game-level count
 
+            game.addInventory("/Axel.png");
+            System.out.println("Item collected with value: " + value);
+            System.out.println("Total collected: " + game.getCollectedCount());
+        } else {
+            System.out.println("Inventory full. Disabling collection for this item.");
+            collectible = false; // Mark this item as no longer collectible
+        }
     }
 
     // Getters and setters for x, y, width, height, and value
