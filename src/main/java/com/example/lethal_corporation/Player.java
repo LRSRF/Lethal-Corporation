@@ -1,4 +1,4 @@
-package com.example.final_project;
+package com.example.lethal_corporation;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -68,7 +68,6 @@ public class Player extends Entity {
         double newX = x;
         double newY = y;
 
-        // Handle movement keys
         if (event.getCode() == KeyCode.D) {
             newX += speed;
             direction = true;
@@ -81,7 +80,6 @@ public class Player extends Entity {
             newY += speed;
         }
 
-        // Check for barrier collision
         boolean collision = false;
         if (barriers != null) {
             for (Barrier barrier : barriers) {
@@ -105,19 +103,13 @@ public class Player extends Entity {
         while (iterator.hasNext()) {
             Item item = iterator.next();
             if (item.checkCollision(x, y, getWidth(), getHeight())) {
-                // Check if inventory is full
-                if (game.getCollectedCount() < 4) { // Assuming a max capacity of 4
-                    collectedItems.add(item);
-                    item.collect(); // Collect the item
-                    iterator.remove();
-                    System.out.println("removed");// Remove the item from the map
-                    game.incrementCollectedCount();
-                } else {
-                    System.out.println("Inventory full! Can't collect item.");
-                }
+                collectedItems.add(item);
+                item.collect();
+                iterator.remove(); // Safe removal
             }
         }
     }
+
     public void handleKeyRelease(KeyEvent event) {
         // Implement logic for when a key is released, if needed
         isMoving = false;

@@ -1,4 +1,4 @@
-package com.example.final_project;
+package com.example.lethal_corporation;
 
 import javafx.scene.media.MediaPlayer;
 

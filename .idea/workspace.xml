@@ -72,11 +72,11 @@
   </component>
   <component name="RunManager">
     <configuration name="MainMenu" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.example.final_project.MainMenu" />
-      <module name="Final_Project" />
+      <option name="MAIN_CLASS_NAME" value="com.example.lethal_corporation.MainMenu" />
+      <module name="LethalCorporation" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.example.final_project.*" />
+          <option name="PATTERN" value="com.example.lethal_corporation.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>

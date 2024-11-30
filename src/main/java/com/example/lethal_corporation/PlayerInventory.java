@@ -1,6 +1,5 @@
-package com.example.final_project;
+package com.example.lethal_corporation;
 
-import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.control.TreeTableView;
 

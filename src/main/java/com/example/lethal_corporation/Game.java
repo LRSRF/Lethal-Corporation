@@ -1,4 +1,4 @@
-package com.example.final_project;
+package com.example.lethal_corporation;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
@@ -8,8 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
