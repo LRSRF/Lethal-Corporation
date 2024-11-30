@@ -12,8 +12,7 @@ public class Item {
     private int value;
     private Image image;
     private int collectedCount = 0;
-    @FXML
-    private Text Gearnumber;
+
     public Item(double x, double y, int value, String imagePath) {
         this.x = x;
         this.y = y;
