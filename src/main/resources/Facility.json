@@ -1,0 +1,113 @@
+{
+  "rooms": {
+    "exit": {
+      "backgroundImagePath": "/PerformanceReport.png"
+    },
+    "room0": {
+      "backgroundImagePath": "/Room0.png",
+      "barriers": [
+        { "x": 0, "y": 0, "width": 1280, "height": 140 },
+        { "x": 0, "y": 14, "width": 13, "height": 214 },
+        { "x": 1267, "y": 14, "width": 13, "height": 214 },
+        { "x": 0, "y": 477, "width": 13, "height": 214 },
+        { "x": 1266, "y": 477, "width": 13, "height": 214 },
+        { "x": 0, "y": 707, "width": 540, "height": 13 },
+        { "x": 720, "y": 707, "width": 540, "height": 13 }
+      ],
+      "items": [
+        { "x": 990, "y": 584, "value": 100, "imagePath": "/Axel.png" }
+      ],
+      "mobs": [],
+      "connections": {
+        "left": "room1",
+        "right": "room2",
+        "down": "room4",
+        "up": "exit"
+      }
+    },
+    "room1": {
+      "backgroundImagePath": "/Room1.png",
+      "barriers": [
+        { "x": 735, "y": 0, "width": 540, "height": 215 },
+        { "x": 730, "y": 488, "width": 540, "height": 230 },
+        { "x": 555, "y": 10, "width": 175, "height": 120 },
+        { "x": 0, "y": 0, "width": 550, "height": 215 },
+        { "x": 0, "y": 0, "width": 370, "height": 710 },
+        { "x": 0, "y": 488, "width": 550, "height": 230 }
+      ],
+      "items": [],
+      "mobs": [],
+      "connections": {
+        "right": "room0",
+        "down": "room3"
+      }
+    },
+    "room2": {
+      "backgroundImagePath": "/Room2.png",
+      "barriers": [
+        { "x": 0, "y": 0, "width": 725, "height": 215 },
+        { "x": 0, "y": 480, "width": 535, "height": 235 },
+        { "x": 725, "y": 0, "width": 550, "height": 715 }
+      ],
+      "items": [],
+      "mobs": [],
+      "connections": {
+        "left": "room0",
+        "down": "room5"
+      }
+    },
+    "room3": {
+      "backgroundImagePath": "/Room3.png",
+      "barriers": [
+        { "x": 0, "y": 0, "width": 550, "height": 720 },
+        { "x": 734, "y": 0, "width": 542, "height": 217 },
+        { "x": 734, "y": 490, "width": 542, "height": 217 },
+        { "x": 547, "y": 0, "width": 175, "height": 120 },
+        { "x": 0, "y": 707, "width": 1280, "height": 13 }
+      ],
+      "items": [
+        { "x": 764, "y": 360, "value": 100, "imagePath": "/Axel.png" }
+      ],
+      "mobs": [],
+      "connections": {
+        "right": "room4",
+        "up": "room1"
+      }
+    },
+    "room4": {
+      "backgroundImagePath": "/Room4.png",
+      "barriers": [
+        { "x": 0, "y": 0, "width": 542, "height": 217 },
+        { "x": 726, "y": 0, "width": 542, "height": 217 },
+        { "x": 0, "y": 490, "width": 1274, "height": 227 },
+        { "x": 547, "y": 0, "width": 175, "height": 120 }
+      ],
+      "items": [],
+      "mobs": [],
+      "connections": {
+        "up": "room0",
+        "left": "room3",
+        "right": "room5"
+      }
+    },
+    "room5": {
+      "backgroundImagePath": "/Room5.png",
+      "barriers": [
+        { "x": 0, "y": 0, "width": 542, "height": 217 },
+        { "x": 726, "y": 0, "width": 542, "height": 217 },
+        { "x": 547, "y": 0, "width": 175, "height": 120 },
+        { "x": 726, "y": 490, "width": 550, "height": 227 }
+      ],
+      "items": [
+        { "x": 590, "y": 580, "value": 100, "imagePath": "/Axel.png" }
+      ],
+      "mobs": [
+        { "x": 1091, "y": 287, "speed": 20.0, "imagePaths": ["/Bracken1.png", "/Bracken2.png", "/Bracken3.png", "/Bracken4.png"] }
+      ],
+      "connections": {
+        "up": "room2",
+        "left": "room4"
+      }
+    }
+  }
+}

@@ -17,8 +17,9 @@ public class Player extends Entity {
     private List<Item> collectedItems;
     private double x, y; // Ensure these are initialized
     private Game game;
+    private String currentRoom;
 
-    public Player(Game game, double x, double y, double speed, List<Barrier> barriers, String imagePath1, String imagePath2, String imagePath3, String imagePath4) {
+    public Player(Game game, double x, double y, double speed, List<Barrier> barriers, String imagePath1, String imagePath2, String imagePath3, String imagePath4, String currentRoom) {
         super(x, y, speed, imagePath1, imagePath2, imagePath3, imagePath4);
         spriteImage1 = new Image(getClass().getResourceAsStream(imagePath1));
         spriteImage2 = new Image(getClass().getResourceAsStream(imagePath2));
@@ -30,6 +31,7 @@ public class Player extends Entity {
         this.y = y;
         this.collectedItems = new ArrayList<>();
         this.game = game;
+        this.currentRoom = currentRoom;
         resetImage();
     }
 
@@ -98,8 +100,8 @@ public class Player extends Entity {
         isMoving = !collision;
 
         // Check for item collision
-        GameMap currentMap = game.getCurrentMap(); // Get current map from game
-        Iterator<Item> iterator = currentMap.getItems().iterator();
+        Room currentRoom = game.getCurrentRoom(); // Get current room from game
+        Iterator<Item> iterator = currentRoom.getItems().iterator();
         while (iterator.hasNext()) {
             Item item = iterator.next();
             if (item.checkCollision(x, y, getWidth(), getHeight())) {
@@ -161,5 +163,13 @@ public class Player extends Entity {
     // Method to get total value of collected items
     public double getTotalCollectedValue() {
         return collectedItems.stream().mapToDouble(Item::getValue).sum();
+    }
+
+    public String getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(String currentRoom) {
+        this.currentRoom = currentRoom;
     }
 }

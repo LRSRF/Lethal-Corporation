@@ -5,16 +5,28 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>Final_Project</artifactId>
+    <artifactId>LethalCorporation</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Final_Project</name>
+    <name>LethalCorporation</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.0</junit.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+        </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -73,7 +85,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.final_project/com.example.lethal_corporation.HelloApplication</mainClass>
+                            <mainClass>com.example.lethal_corporation/com.example.lethal_corporation.MainMenu</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -21,9 +21,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class Game {
 
@@ -32,40 +36,39 @@ public class Game {
     @FXML
     private JFXButton backButton;
     @FXML
-    private Text Gameover;
-    @FXML
     private Text Report;
 
     private GraphicsContext gc;
     private MediaPlayer mediaPlayer;
     private Timeline animationTimeline;
     private boolean isGameOver = false;
-    private boolean isMapSetupTriggered = false;
+    private boolean isExit = false;
     private int totalValue;
     private int collectedItems;
     private Player player;
-    private Map<String, GameMap> maps;
-    private GameMap currentMap;
+    private Map<String, Room> Map;
+    private Room currentRoom;
 
     @FXML
     public void initialize() {
         gc = gameCanvas.getGraphicsContext2D();
 
-        // Initialize maps
-        maps = new HashMap<>();
-        loadMaps();
-        setCurrentMap("map0");
+        // Initialize Rooms
+        Map = new HashMap<>();
+        loadMap();
+        setCurrentRoom("room0");
 
         // Initialize player
-        player = new Player(this,600, 300, 10.0, currentMap.getBarriers(), "/Employee1.png", "/Employee2.png", "/Employee3.png", "/Employee4.png");
+        player = new Player(this, 600, 300, 10.0, currentRoom.getBarriers(), "/Employee1.png", "/Employee2.png", "/Employee3.png", "/Employee4.png", "room0");
 
-        // Setup player and mobs
-        for (Bracken bracken : currentMap.getMobs()) {
-            bracken.setupMovement(player, currentMap.getBarriers());
+        // Setup BFS for each Bracken in each room
+        for (Room room : Map.values()) {
+            for (Bracken bracken : room.getMobs()) {
+                bracken.setupRoomTraversal(player); // Start BFS for each bracken
+            }
         }
 
         playmusic();
-
         drawGame();
 
         gameCanvas.setOnKeyPressed(this::handleKeyPressed);
@@ -81,98 +84,105 @@ public class Game {
         backButton.setDisable(true);
     }
 
-    private void loadMaps() {
-        // Create and add maps
-        GameMap map0 = new GameMap("/Map0.png");
-        map0.addBarrier(new Barrier(0, 0, 1280, 140));
-        map0.addBarrier(new Barrier(0, 14, 13, 214));
-        map0.addBarrier(new Barrier(1267, 14, 13, 214));
-        map0.addBarrier(new Barrier(0, 477, 13, 214));
-        map0.addBarrier(new Barrier(1266, 477, 13, 214));
-        map0.addBarrier(new Barrier(0, 707, 540, 13));
-        map0.addBarrier(new Barrier(720, 707, 540, 13));
-        map0.addItem(new Item(990, 584, 70, "/Bottles.png"));
 
-        GameMap map1 = new GameMap("/Map1.png");
-        map1.addBarrier(new Barrier(735, 0, 540, 215));
-        map1.addBarrier(new Barrier(730, 488, 540, 230));
-        map1.addBarrier(new Barrier(555, 10, 175, 120));
-        map1.addBarrier(new Barrier(0, 0, 550, 215));
-        map1.addBarrier(new Barrier(0, 0, 370, 710));
-        map1.addBarrier(new Barrier(0, 488, 550, 230));
+    private void loadMap() {
+        try {
+            // Read JSON file
+            InputStreamReader reader = new InputStreamReader(getClass().getResourceAsStream("/Facility.json"));
+            StringBuilder jsonStr = new StringBuilder();
+            int i;
+            while ((i = reader.read()) != -1) {
+                jsonStr.append((char) i);
+            }
+            reader.close();
 
-        GameMap map2 = new GameMap("/Map2.png");
-        map2.addBarrier(new Barrier(0, 0, 725, 215));
-        map2.addBarrier(new Barrier(0, 480, 535, 235));
-        map2.addBarrier(new Barrier(725, 0, 550, 715));
+            JSONObject jsonObject = new JSONObject(jsonStr.toString());
+            JSONObject roomsJson = jsonObject.getJSONObject("rooms");
 
-        GameMap map3 = new GameMap("/Map3.png");
-        map3.addBarrier(new Barrier(0, 0, 550, 720));
-        map3.addBarrier(new Barrier(734, 0, 542, 217));
-        map3.addBarrier(new Barrier(734, 490, 542, 217));
-        map3.addBarrier(new Barrier(547, 0, 175, 120));
-        map3.addBarrier(new Barrier(0, 707, 1280, 13));
-        map3.addItem(new Item(764, 360, 100, "/Axel.png"));
+            // Iterate over each room entry in the JSON file
+            for (String roomKey : roomsJson.keySet()) {
+                JSONObject roomData = roomsJson.getJSONObject(roomKey);
+                Room rooms = new Room(roomKey, roomData.getString("backgroundImagePath"));
 
-        GameMap map4 = new GameMap("/Map4.png");
-        map4.addBarrier(new Barrier(0, 0, 542, 217));
-        map4.addBarrier(new Barrier(726, 0, 542, 217));
-        map4.addBarrier(new Barrier(0, 490, 1274, 227));
-        map4.addBarrier(new Barrier(547, 0, 175, 120));
+                // Load barriers
+                JSONArray barriers = roomData.optJSONArray("barriers");
+                if (barriers != null) {
+                    for (int j = 0; j < barriers.length(); j++) {
+                        JSONObject barrierJson = barriers.getJSONObject(j);
+                        Barrier barrier = new Barrier(
+                                barrierJson.getInt("x"),
+                                barrierJson.getInt("y"),
+                                barrierJson.getInt("width"),
+                                barrierJson.getInt("height")
+                        );
+                        rooms.addBarrier(barrier);
+                    }
+                }
 
-        GameMap map5 = new GameMap("/Map5.png");
-        map5.addBarrier(new Barrier(0, 0, 542, 217));
-        map5.addBarrier(new Barrier(726, 0, 542, 217));
-        map5.addBarrier(new Barrier(547, 0, 175, 120));
-        map5.addBarrier(new Barrier(726, 490, 550, 227));
-        map5.addBarrier(new Barrier(0, 707, 1280, 13));
-        map5.addItem(new Item(590, 580, 200, "/Engine.png"));
-        map5.addMob(new Bracken(1091, 287, 20.0, "/Bracken1.png", "/Bracken2.png", "/Bracken3.png", "/Bracken4.png"));
+                // Load items
+                JSONArray items = roomData.optJSONArray("items");
+                if (items != null) {
+                    for (int j = 0; j < items.length(); j++) {
+                        JSONObject itemJson = items.getJSONObject(j);
+                        Item item = new Item(
+                                itemJson.getInt("x"),
+                                itemJson.getInt("y"),
+                                itemJson.getInt("value"),
+                                itemJson.getString("imagePath")
+                        );
+                        rooms.addItem(item);
+                    }
+                }
 
-        GameMap map6 = new GameMap("/PerformanceReport.png");
+                // Load mobs
+                JSONArray mobs = roomData.optJSONArray("mobs");
+                if (mobs != null) {
+                    for (int j = 0; j < mobs.length(); j++) {
+                        JSONObject mobJson = mobs.getJSONObject(j);
+                        Bracken bracken = new Bracken(
+                                mobJson.getInt("x"),
+                                mobJson.getInt("y"),
+                                mobJson.getDouble("speed"),
+                                mobJson.getJSONArray("imagePaths").getString(0),
+                                mobJson.getJSONArray("imagePaths").getString(1),
+                                mobJson.getJSONArray("imagePaths").getString(2),
+                                mobJson.getJSONArray("imagePaths").getString(3),
+                                Map,
+                                roomKey
+                        );
+                        rooms.addMob(bracken);
+                    }
+                }
 
-        map0.setUpMapKey("map6");
-        map0.setLeftMapKey("map1");
-        map0.setRightMapKey("map2");
-        map0.setDownMapKey("map4");
+                // Set room connections (Left, Right, Up, Down)
+                JSONObject connections = roomData.optJSONObject("connections");
+                if (connections != null) {
+                    for (String direction : connections.keySet()) {
+                        rooms.addNeighbor(direction, connections.getString(direction));
+                    }
+                }
 
-        map1.setRightMapKey("map0");
-        map1.setDownMapKey("map3");
-
-        map2.setLeftMapKey("map0");
-        map2.setDownMapKey("map5");
-
-        map3.setRightMapKey("map4");
-        map3.setUpMapKey("map1");
-
-        map4.setUpMapKey("map0");
-        map4.setLeftMapKey("map3");
-        map4.setRightMapKey("map5");
-
-        map5.setUpMapKey("map2");
-        map5.setLeftMapKey("map4");
-
-        maps.put("map0", map0);
-        maps.put("map1", map1);
-        maps.put("map2", map2);
-        maps.put("map3", map3);
-        maps.put("map4", map4);
-        maps.put("map5", map5);
-        maps.put("map6", map6);
+                // Add to rooms
+                Map.put(roomKey, rooms);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void setCurrentMap(String mapKey) {
-        currentMap = maps.get(mapKey);
+
+    private void setCurrentRoom(String roomKey) {
+        currentRoom = Map.get(roomKey);
     }
 
-    public GameMap getCurrentMap() {
-        return currentMap;
+    public Room getCurrentRoom() {
+        return currentRoom;
     }
 
     private void setupAnimation() {
         animationTimeline = new Timeline(new KeyFrame(Duration.seconds(0.2), event -> {
             player.animate();
-            for (Bracken bracken : currentMap.getMobs()) {
+            for (Bracken bracken : currentRoom.getMobs()) {
                 bracken.animate();
             }
             drawGame();
@@ -208,15 +218,16 @@ public class Game {
         // Clear the canvas to avoid afterimages
         gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
-        // Draw the current map
-        currentMap.draw(gc);
+        // Draw the current room
+        currentRoom.draw(gc);
 
         // Draw the player
         player.draw(gc);
 
         // Check for collision between player and mobs
-        for (Bracken bracken : currentMap.getMobs()) {
+        for (Bracken bracken : currentRoom.getMobs()) {
             if (player.checkCollision(bracken.getX(), bracken.getY(), bracken.getWidth(), bracken.getHeight())) {
+                bracken.stopChasingPlayer();
                 gameOver();
                 return;
             }
@@ -249,53 +260,81 @@ public class Game {
     private void handleKeyPressed(KeyEvent event) {
         if (isGameOver) return;
 
+        // Handle player key press
         player.handleKeyPress(event);
 
-        // Check for map transitions
+        // Get player position
         double playerX = player.getX();
         double playerY = player.getY();
 
-        if (playerX <= 0 && currentMap.getLeftMapKey() != null) {
-            switchMap(currentMap.getLeftMapKey(), gameCanvas.getWidth() - player.getWidth(), playerY);
-        } else if (playerX + player.getWidth() >= gameCanvas.getWidth() && currentMap.getRightMapKey() != null) {
-            switchMap(currentMap.getRightMapKey(), 0, playerY);
-        } else if (playerY <= 150 && currentMap.getUpMapKey() != null) {
-            switchMap(currentMap.getUpMapKey(), playerX, gameCanvas.getHeight() - player.getHeight());
-        } else if (playerY + player.getHeight() >= gameCanvas.getHeight() && currentMap.getDownMapKey() != null) {
-            switchMap(currentMap.getDownMapKey(), playerX, 0+200);
+        // Check for room transitions
+        String nextRoomKey = null;
+        double nextPlayerX = playerX; // Default: keep player's current X
+        double nextPlayerY = playerY; // Default: keep player's current Y
+
+        // Transition to the left room
+        if (playerX <= 0 && (nextRoomKey = currentRoom.getNeighbor("left")) != null) {
+            nextPlayerX = gameCanvas.getWidth() - player.getWidth(); // Place player at the right edge of the new room
+        }
+        // Transition to the right room
+        else if (playerX + player.getWidth() >= gameCanvas.getWidth() && (nextRoomKey = currentRoom.getNeighbor("right")) != null) {
+            nextPlayerX = 0; // Place player at the left edge of the new room
+        }
+        // Transition to the up room
+        else if (playerY <= 150 && (nextRoomKey = currentRoom.getNeighbor("up")) != null) {
+            nextPlayerY = gameCanvas.getHeight() - player.getHeight(); // Place player at the bottom edge of the new room
+        }
+        // Transition to the down room
+        else if (playerY + player.getHeight() >= gameCanvas.getHeight() && (nextRoomKey = currentRoom.getNeighbor("down")) != null) {
+            nextPlayerY = 200; // Place player slightly below the top edge of the new room
+        }
+
+        // Perform room transition if a valid neighbor room exists
+        if (nextRoomKey != null) {
+            switchRoom(nextRoomKey, nextPlayerX, nextPlayerY);
         } else {
+            // No room transition, just draw the game and start animation
             drawGame();
             startAnimation();
         }
     }
 
-    private void switchMap(String newMapKey, double newX, double newY) {
-        // Switch to the new map
-        setCurrentMap(newMapKey);
+    private void switchRoom(String newRoomKey, double newX, double newY) {
+        // Switch to the new room
+        setCurrentRoom(newRoomKey);
+        player.setCurrentRoom(newRoomKey);
 
         // Update player position
         player.setX(newX);
         player.setY(newY);
-        player.setBarriers(getCurrentMap().getBarriers());
+        player.setBarriers(getCurrentRoom().getBarriers());
 
-        // Update mobs to target the player in the new map
-        for (Bracken bracken : currentMap.getMobs()) {
-            bracken.setupMovement(player, currentMap.getBarriers());
+        // Update mobs to target the player in the new room
+        for (Bracken bracken : currentRoom.getMobs()) {
+            bracken.setupPlayerChase(player, currentRoom.getBarriers());
         }
 
         // Redraw the game
         drawGame();
 
-        if (newMapKey.equals("map6")) {
-            isMapSetupTriggered = true; // Trigger the map setup
+        if (newRoomKey.equals("exit")) {
+            isExit = true; // Trigger the room setup
             updateCollectedItems(); // Check the win condition
         }
     }
 
+    public Room getRoomById(String roomId) {
+        return Map.get(roomId);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
     private int calculateTotalItems() {
         int totalValue = 0;
-        for (GameMap map : maps.values()) {
-            for (Item item : map.getItems()) {
+        for (Room rooms : Map.values()) {
+            for (Item item : rooms.getItems()) {
                 totalValue += (int) item.getValue(); // Sum up the values of all items
             }
         }
@@ -303,8 +342,8 @@ public class Game {
     }
 
     private void updateCollectedItems() {
-        if (!isMapSetupTriggered) {
-            return; // Do not update if map0.setUpMapKey() has not been triggered
+        if (!isExit) {
+            return;
         }
 
         collectedItems = (int) player.getTotalCollectedValue();
@@ -349,7 +388,6 @@ public class Game {
         gc.drawImage(resultImage, 0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
         backButton.setDisable(false);
-
     }
 
     private void handleKeyReleased(KeyEvent event) {
@@ -376,8 +414,9 @@ public class Game {
     private void gameOver() {
         // Handle game over
         animationTimeline.stop();
-        for (Bracken bracken : currentMap.getMobs()) {
-            bracken.stopMovement();
+        for (Bracken bracken : currentRoom.getMobs()) {
+            bracken.stopChasingPlayer();
+            bracken.stopRoomTraversal();
         }
 
         Image resultImage = new Image(getClass().getResourceAsStream("/GameOver.png"));

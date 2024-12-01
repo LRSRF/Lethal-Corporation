@@ -1,9 +1,7 @@
 package com.example.lethal_corporation;
 
-import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.text.Text;
 
 public class Item {
     private double x, y;
