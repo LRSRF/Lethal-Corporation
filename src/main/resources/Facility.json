@@ -15,7 +15,11 @@
         { "x": 720, "y": 707, "width": 540, "height": 13 }
       ],
       "items": [
-        { "x": 990, "y": 584, "value": 100, "imagePath": "/Axel.png" }
+        { "x": 990, "y": 584, "value": 100, "imagePath": "/Bottles.png", "itemName": "Bottles" },
+        { "x": 764, "y": 360, "value": 100, "imagePath": "/Axel.png","itemName": "Axel"  },
+        { "x": 800, "y": 360, "value": 100, "imagePath": "/Axel.png","itemName": "Axel"  }
+
+
       ],
       "mobs": [],
       "connections": {
@@ -66,7 +70,7 @@
         { "x": 0, "y": 707, "width": 1280, "height": 13 }
       ],
       "items": [
-        { "x": 764, "y": 360, "value": 100, "imagePath": "/Axel.png" }
+        { "x": 764, "y": 360, "value": 100, "imagePath": "/Axel.png","itemName": "Axel"  }
       ],
       "mobs": [],
       "connections": {
@@ -99,7 +103,7 @@
         { "x": 726, "y": 490, "width": 550, "height": 227 }
       ],
       "items": [
-        { "x": 590, "y": 580, "value": 100, "imagePath": "/Axel.png" }
+        { "x": 590, "y": 580, "value": 100, "imagePath": "/Axel.png","itemName": "Axel" }
       ],
       "mobs": [
         { "x": 1091, "y": 287, "speed": 20.0, "imagePaths": ["/Bracken1.png", "/Bracken2.png", "/Bracken3.png", "/Bracken4.png"] }

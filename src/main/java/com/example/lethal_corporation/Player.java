@@ -99,19 +99,19 @@ public class Player extends Entity {
 
         isMoving = !collision;
 
-        // Check for item collision
-        Room currentRoom = game.getCurrentRoom(); // Get current room from game
-        Iterator<Item> iterator = currentRoom.getItems().iterator();
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-            if (item.checkCollision(x, y, getWidth(), getHeight())) {
-                collectedItems.add(item);
-                item.collect();
-                iterator.remove(); // Safe removal
+        if (game.getCollectedCount() < 4) {// Check for item collision
+            Room currentRoom = game.getCurrentRoom(); // Get current room from game
+            Iterator<Item> iterator = currentRoom.getItems().iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                if (item.checkCollision(x, y, getWidth(), getHeight())) {
+                    collectedItems.add(item);
+                    item.collect();
+                    iterator.remove(); // Safe removal
+                }
             }
         }
     }
-
     public void handleKeyRelease(KeyEvent event) {
         // Implement logic for when a key is released, if needed
         isMoving = false;

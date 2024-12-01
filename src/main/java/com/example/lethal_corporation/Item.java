@@ -3,21 +3,32 @@ package com.example.lethal_corporation;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.io.InputStream;
+
 public class Item {
     private double x, y;
     private double width, height;
-    private boolean collected;
+    private int collectedcount;
     private int value;
     private Image image;
-    private int collectedCount = 0;
+    private String name;
+    private String imagePath;
+    private boolean weight ;
+    private boolean collectible = true;
 
-    public Item(double x, double y, int value, String imagePath) {
+    public Item(double x, double y, double value, String imagePath, String itemName) {
         this.x = x;
         this.y = y;
-        this.value = value;
-        this.image = new Image(getClass().getResourceAsStream(imagePath));
+        this.value = (int) value;
+        this.imagePath = imagePath; // Store the image path
+        InputStream imageStream = getClass().getResourceAsStream(imagePath);
+        if (imageStream == null) {
+            throw new IllegalArgumentException("Image not found: " + imagePath);
+        }
+        this.image = new Image(imageStream);
         this.width = image.getWidth();
         this.height = image.getHeight();
+        this.name = itemName;
     }
 
     public void draw(GraphicsContext gc) {
@@ -32,10 +43,20 @@ public class Item {
         return value;
     }
 
-    public void collect() {
-        collected = true;
 
-        System.out.println("Item collected with value: " + value);
+    public void collect() {
+        Game game = Game.getCurrentGame(); // Retrieve the active Game instance
+
+        if (game.getCollectedCount() < 4) { // Use game-level count
+
+            game.addInventory(name, imagePath, value);
+            System.out.println("Item collected with value: " + value);
+            System.out.println("Total collected: " + game.getCollectedCount());
+
+
+
+
+        }
 
     }
 

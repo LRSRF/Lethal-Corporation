@@ -1,6 +1,7 @@
 package com.example.lethal_corporation;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,13 +10,19 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -25,6 +32,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
+import javafx.scene.image.Image;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -37,7 +46,7 @@ public class Game {
     private JFXButton backButton;
     @FXML
     private Text Report;
-
+    private String lastKeyPressed = "";
     private GraphicsContext gc;
     private MediaPlayer mediaPlayer;
     private Timeline animationTimeline;
@@ -48,14 +57,46 @@ public class Game {
     private Player player;
     private Map<String, Room> Map;
     private Room currentRoom;
-
+    private Canvas inventoryCanvas;
     @FXML
+    private Text Heavy;
+    private Stack<InventoryItem> inventoryStack = new Stack<>();
+    private GraphicsContext inventoryGC;
+    private static Game currentGame;
+    private int collectedCount = 0;
+
+    private FadeTransition fadeInOut;
+    @FXML
+    private AnchorPane gameRoot;
+
+
+    public Game() {
+        currentGame = this;
+        // Set the current instance when the game is created
+    }
+    public static Game getCurrentGame() {
+        if (currentGame == null) {
+            currentGame = new Game();
+        }
+        return currentGame;
+    }
+    public int getCollectedCount() {
+        System.out.println(collectedCount);
+        return collectedCount;
+    }
+    public void incrementCollectedCount(int amount) {
+        collectedCount+=amount;
+    }
+    public void minusCollectedCount(int amount) {
+        collectedCount-=amount;
+    }
     public void initialize() {
         gc = gameCanvas.getGraphicsContext2D();
-
+        loadInventory();
         // Initialize Rooms
         Map = new HashMap<>();
         loadMap();
+
         setCurrentRoom("room0");
 
         // Initialize player
@@ -82,6 +123,8 @@ public class Game {
         collectedItems = 0;
 
         backButton.setDisable(true);
+
+
     }
 
 
@@ -128,7 +171,8 @@ public class Game {
                                 itemJson.getInt("x"),
                                 itemJson.getInt("y"),
                                 itemJson.getInt("value"),
-                                itemJson.getString("imagePath")
+                                itemJson.getString("imagePath"),
+                                itemJson.getString("itemName")
                         );
                         rooms.addItem(item);
                     }
@@ -169,6 +213,25 @@ public class Game {
             e.printStackTrace();
         }
     }
+    public void encumbered() {
+        if (collectedCount >= 4) {
+            if (fadeInOut == null) { // Only create a new transition if none exists
+                fadeInOut = new FadeTransition(Duration.seconds(1), Heavy);
+                fadeInOut.setFromValue(1.0); // Full opacity
+                fadeInOut.setToValue(0.3);  // Minimum opacity
+                fadeInOut.setCycleCount(FadeTransition.INDEFINITE); // Continuous effect
+                fadeInOut.setAutoReverse(true); // Reverse the direction to create fade-in and fade-out
+            }
+            fadeInOut.play();
+        } else {
+            if (fadeInOut != null) {
+                fadeInOut.stop(); // Stop the fade effect
+                fadeInOut = null; // Clean up the reference
+            }
+            Heavy.setOpacity(0); // Reset opacity to fully visible
+        }
+    }
+
 
 
     private void setCurrentRoom(String roomKey) {
@@ -189,6 +252,103 @@ public class Game {
         }));
         animationTimeline.setCycleCount(Animation.INDEFINITE);
         animationTimeline.play();
+    }
+
+    private void loadInventory() {
+        // Create a new canvas for the inventory
+        inventoryCanvas = new Canvas(150, 85); // Single cell, adjust size as needed
+        inventoryCanvas.setVisible(true); // Make visible
+
+        // Set position for the inventory canvas
+        inventoryCanvas.setLayoutX(1125); // Adjust position as needed
+        inventoryCanvas.setLayoutY(590); // Adjust position as needed
+
+        // Get the graphics context to draw items
+        inventoryGC = inventoryCanvas.getGraphicsContext2D();
+
+        // Load the background image
+        Image backgroundImage = new Image("inventory.png"); // Ensure the path is correct
+
+        // Draw the background image
+        inventoryGC.drawImage(backgroundImage, 0, 0, 150, 85); // Adjust size as needed
+
+
+
+        // Add the canvas to the game root
+        gameRoot.getChildren().add(inventoryCanvas);
+    }
+    public void addInventory(String itemName, String imagePath, double value) {
+        // Create an InventoryItem instance with the name and image path
+
+        InventoryItem inventoryItem = new InventoryItem(itemName, imagePath, value);
+        System.out.println(itemName);
+        // Add the inventory item to the stack
+        inventoryStack.push(inventoryItem);
+        if(itemName.equals("Bottles")){
+            incrementCollectedCount(4);
+        }else {
+            incrementCollectedCount(1); // Default increment
+        }
+        // Redraw the inventory to show the added item
+        redrawInventory();
+        encumbered();
+    }
+
+    // Redraw the inventory, displaying all items in the stack
+    public void redrawInventory() {
+        // Clear the inventory canvas
+        inventoryGC.clearRect(0, 0, inventoryCanvas.getWidth(), inventoryCanvas.getHeight());
+
+        Image backgroundImage = new Image("inventory.png"); // Ensure the path is correct
+        inventoryGC.drawImage(backgroundImage, 0, 0, 150, 85);
+
+        // Stack the items visually
+        int index = 0;
+        for (InventoryItem item : inventoryStack) {  // Now using InventoryItem instead of Image
+            double offset = index * -20; // Adjust overlap shift (e.g., 10 pixels to the left for each item)
+            double x = offset + 60; // Shift each subsequent item
+            double y = offset * 0 - 10; // Optional: Add a vertical offset for visual effect
+            inventoryGC.drawImage(item.getImage(), x, y, 100, 100); // Get the image from InventoryItem
+            index++;
+        }
+    }
+
+    // Drop an inventory item (remove the top item from the stack and add it to the current room)
+    public void dropInventory(double playerX, double playerY) {
+        if (!inventoryStack.isEmpty()) {
+            // Remove the top item from the stack (the most recently added item)
+            InventoryItem droppedItem = inventoryStack.pop();
+
+            // Redraw the inventory to reflect the removed item
+            redrawInventory();
+
+            Double value = droppedItem.getValue();
+
+            // Create a new Item object for the dropped item (using the image path from InventoryItem)
+            String imagePath = droppedItem.getImagePath();  // Get the image path from InventoryItem
+            String name = droppedItem.getName();
+
+            if (name.equals("Bottles")){
+                minusCollectedCount(4);
+            }else{
+                minusCollectedCount(1);
+            }
+            // Calculate the position offset based on the last key pressed
+            double offsetX = 0;
+            if ("A".equals(lastKeyPressed)) {
+                offsetX = -100;  // Move to the left if "A" was pressed
+            } else if ("D".equals(lastKeyPressed)) {
+                offsetX = 100;   // Move to the right if "D" was pressed
+            }
+
+            // Create the dropped Item with the calculated position
+            Item droppedItemInstance = new Item(playerX + offsetX, playerY, value, imagePath, droppedItem.getName());
+
+            // Add the dropped item to the current room's items using addItem method
+            Room currentRoom = getCurrentRoom(); // Get the current room
+            currentRoom.addItem(droppedItemInstance);
+            encumbered();// Add the dropped item to the room
+        }
     }
 
     //Play background music
@@ -288,7 +448,14 @@ public class Game {
         else if (playerY + player.getHeight() >= gameCanvas.getHeight() && (nextRoomKey = currentRoom.getNeighbor("down")) != null) {
             nextPlayerY = 200; // Place player slightly below the top edge of the new room
         }
-
+        if (event.getCode() == KeyCode.G) {
+            dropInventory(playerX, playerY);
+        }
+        if (event.getCode() == KeyCode.A) {
+            lastKeyPressed = "A";  // Store "A" if 'A' key is pressed
+        } else if (event.getCode() == KeyCode.D) {
+            lastKeyPressed = "D";  // Store "D" if 'D' key is pressed
+        }
         // Perform room transition if a valid neighbor room exists
         if (nextRoomKey != null) {
             switchRoom(nextRoomKey, nextPlayerX, nextPlayerY);

@@ -19,6 +19,11 @@
                   <Font name="Courier New Bold" size="34.0" />
                </font>
             </Text>
+            <Text fx:id="Heavy" fill="#b0ba41" layoutX="1123.0" layoutY="560.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Currently holding heavy item" textAlignment="CENTER" wrappingWidth="151.853515625">
+               <font>
+                  <Font name="Courier New Bold" size="14.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
       <JFXButton fx:id="backButton" buttonType="RAISED" onAction="#ExitButton" onMouseClicked="#ExitButton" opacity="0.0" prefHeight="724.0" prefWidth="1280.0" textAlignment="CENTER" textFill="WHITE">
